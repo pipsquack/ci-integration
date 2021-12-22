@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ci-integration
+  labels:
+    app.kubernetes.io/name: ci-integration
+    admission.datadoghq.com/enabled: "true"
+    tags.datadoghq.com/env: lab
+    tags.datadoghq.com/service: ci-integration
+    tags.datadoghq.com/version: "0.1"
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+  - name: ci-integration
+    image: yaalexf/ci-integration
+    imagePullPolicy: Always
+    resources:
+      requests:
+        memory: "144Mi"
+        cpu: "20m"
+      limits:
+        memory: "256Mi"
+        cpu: "1000m"
+    env:
+    - name: DD_AGENT_HOST
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    - name: DD_LOGS_INJECTION
+      value: "true"
+    - name: DD_PROFILING_ENABLED
+      value: "true"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servlet
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: ci-integration
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: servlet
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: cluster.alexf.aws.pipsquack.ca
+    http:
+      paths:
+      - path: /ci-integration(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: servlet
+            port:
+              number: 80
+
