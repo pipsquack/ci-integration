@@ -19,8 +19,8 @@ public class HelloController {
 	}
 
 	@GetMapping("/boom")
-	public String boom() {
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void boom() {
 		System.out.println(5 / 0);
-		return "";
 	}
 }
