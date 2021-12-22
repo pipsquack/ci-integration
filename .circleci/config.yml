@@ -48,7 +48,7 @@ jobs:
           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           docker push yaalexf/ci-integration
 workflows:
-  spring-boot-app-workflow:
+  ci-integration-workflow:
     jobs:
       - test:
           context:
