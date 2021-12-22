@@ -50,7 +50,11 @@ jobs:
 workflows:
   spring-boot-app-workflow:
     jobs:
-      - test
+      - test:
+          context:
+            - Datadog
       - build:
+          context:
+            - Datadog
           requires:
             - test
