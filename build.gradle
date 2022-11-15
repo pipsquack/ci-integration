@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-	ddTracerAgent "com.datadoghq:dd-java-agent:0.92.0"
+	ddTracerAgent "com.datadoghq:dd-java-agent:0.115.0"
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
